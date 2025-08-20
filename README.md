@@ -31,4 +31,9 @@ JsonPath root / 'store' / 'book' > (0 to: 2) / 'title'
 JsonPath root / 'store' / 'book' > [:item | item price < 15] / 'title'
 "=> '$.store.book[?(@.price < 15)].title'"
 
+JsonPath root / 'store' // 'title' 
+"=> '$.store..title'"
+
+JsonPath root / 'store' / 'book' / #all / 'price'
+"=> '$.store.book[*].price'"
 ```
