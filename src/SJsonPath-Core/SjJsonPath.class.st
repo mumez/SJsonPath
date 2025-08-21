@@ -27,7 +27,6 @@ SjJsonPath class >> token: pathToken [
 
 { #category : 'accessing' }
 SjJsonPath >> tokens [
-	tokens
 	tokens ifNil: [ tokens := OrderedCollection new ].
 	^ tokens
 ]
