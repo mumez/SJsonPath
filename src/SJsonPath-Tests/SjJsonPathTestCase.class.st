@@ -18,4 +18,11 @@ SjJsonPathTestCase >> testCreateBasicPath [
 	self assert: path asString equals: '$.users[0]'
 ]
 
+{ #category : 'testing' }
+SjJsonPathTestCase >> testCreateArraySlicePath [
+	| path |
+	path := SjJsonPath root / 'book' > (0 to: 2).
+	self assert: path asString equals: '$.book[0:2]'
+]
+
 

@@ -60,7 +60,7 @@ SjJsonPath >> // otherPath [
 
 { #category : 'private' }
 SjJsonPath >> arrayEnclosed: index [
-	^ {'['. index asString. ']'}
+	^ {'['. index asJsonPathTokenString. ']'}
 ]
 
 { #category : 'constants' }
