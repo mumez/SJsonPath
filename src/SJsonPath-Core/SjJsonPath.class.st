@@ -30,6 +30,16 @@ SjJsonPath class >> token: pathToken [
 	^ self tokens: { pathToken }
 ]
 
+{ #category : 'utilities' }
+SjJsonPath class >> first: index [
+	^ ':{1}' format: { index }
+]
+
+{ #category : 'utilities' }
+SjJsonPath class >> last: index [
+	^ '-{1}:' format: { index }
+]
+
 { #category : 'accessing' }
 SjJsonPath >> tokens [
 	tokens ifNil: [ tokens := OrderedCollection new ].

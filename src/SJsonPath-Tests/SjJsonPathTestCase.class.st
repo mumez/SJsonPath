@@ -35,4 +35,14 @@ SjJsonPathTestCase >> testCreateWildcardPath [
 	self assert: path asString equals: '$.store.book[*].author'
 ]
 
+{ #category : 'testing' }
+SjJsonPathTestCase >> testCreateArraySlicePathWithFirstAndLast [
+	| path |
+	path := SjJsonPath root / 'book' > (SjJsonPath first: 3).
+	self assert: path asString equals: '$.book[:3]'.
+	
+	path := SjJsonPath root / 'book' > (SjJsonPath last: 1).
+	self assert: path asString equals: '$.book[-1:]'
+]
+
 
