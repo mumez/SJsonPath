@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-SJsonPath is a Smalltalk library that provides a fluent API for creating JsonPath expression strings. The project is structured as a Pharo/Smalltalk package using the Tonel format with Metacello baseline configuration.
+SJsonPath is a Smalltalk library that provides a fluent API for creating JsonPath expression strings with support for property access, array indexing, slicing, wildcards, and recursive search. The project is structured as a Pharo/Smalltalk package using the Tonel format with Metacello baseline configuration.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ The project consists of three main packages:
 The core architecture is built around:
 - `SjJsonPath` class with a `tokens` instance variable that stores path components
 - Fluent API design allowing method chaining to build JsonPath expressions
-- Class-side factory method `root` for creating root JsonPath instances
+- Class-side factory methods `root` for creating root JsonPath instances and `all` for wildcard expressions
 
 ## Key Components
 
@@ -34,6 +34,8 @@ The `SjJsonPath` class implements the following fluent API methods:
 - `/ otherPath`: Property access using dot notation (e.g., `$.store.book`)
 - `> index`: Array index access using bracket notation (e.g., `$.users[0]`)
 - `> interval`: Array slice access using interval notation (e.g., `$.book[0:2]` for `'book' > (0 to: 2)`)
+- `> SjJsonPath all`: Array wildcard access using bracket notation (e.g., `$.store.book[*].author`)
+- `/ SjJsonPath all`: Property wildcard access using dot notation (e.g., `$.store.*`)
 - `// otherPath`: Recursive/descendant search using double dot (e.g., `$.store..title`)
 - `asString`: Converts the JsonPath to its string representation
 
@@ -65,10 +67,11 @@ SjJsonPathTestCase suite run
 
 The project has implemented the core fluent API:
 - Core `SjJsonPath` class with working fluent API methods (`/`, `>`, `//`)
-- Test class with `testCreateBasicPath` and `testCreateArraySlicePath` methods covering basic functionality and array slice support
+- Test class with `testCreateBasicPath`, `testCreateArraySlicePath`, and `testCreateWildcardPath` methods covering basic functionality, array slice support, and wildcard expressions
 - Token-based architecture for building JsonPath expressions
 - String conversion via `asString` method that concatenates all tokens
 - Array slice support through Interval objects with proper JsonPath slice notation (e.g., `[0:2]`)
+- Wildcard support for both property access (`$.store.*`) and array indexing (`$.store.book[*].author`) via `SjJsonPath all`
 - Extensible token string conversion system via `asJsonPathTokenString` protocol
 
 ## Package Structure

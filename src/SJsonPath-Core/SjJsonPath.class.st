@@ -14,6 +14,11 @@ SjJsonPath class >> root [
 ]
 
 { #category : 'instance creation' }
+SjJsonPath class >> all [
+	^ self token: '*'
+]
+
+{ #category : 'instance creation' }
 SjJsonPath class >> tokens: pathTokens [
 	^ self new
 		  tokens: pathTokens;

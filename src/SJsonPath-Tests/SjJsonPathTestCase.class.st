@@ -25,4 +25,14 @@ SjJsonPathTestCase >> testCreateArraySlicePath [
 	self assert: path asString equals: '$.book[0:2]'
 ]
 
+{ #category : 'testing' }
+SjJsonPathTestCase >> testCreateWildcardPath [
+	| path |
+	path := SjJsonPath root / 'store' / SjJsonPath all.
+	self assert: path asString equals: '$.store.*'.
+	
+	path := SjJsonPath root / 'store' / 'book' > SjJsonPath all / 'author'.
+	self assert: path asString equals: '$.store.book[*].author'
+]
+
 
