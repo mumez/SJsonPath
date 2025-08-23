@@ -54,23 +54,23 @@ SjJsonPath >> tokens: anObject [
 { #category : 'converting' }
 SjJsonPath >> asString [
 	^ String streamContents: [:strm | 
-		self tokens do: [:each | strm nextPutAll: each asString ]
+		self tokens do: [:each | strm nextPutAll: each asJsonPathTokenString ]
 	]
 ]
 
 { #category : 'actions' }
 SjJsonPath >> / otherPath [
-	^ self class tokens: (self tokens, {self dot. otherPath asString})
+	^ self class tokens: (self tokens, {self dot. otherPath})
 ]
 
 { #category : 'actions' }
-SjJsonPath >> > index [
+SjJsonPath >> @ index [
 	^ self class tokens: (self tokens, (self arrayEnclosed: index))
 ]
 
 { #category : 'actions' }
 SjJsonPath >> // otherPath [
-	^ self class tokens: (self tokens, {self doubleDot. otherPath asString})
+	^ self class tokens: (self tokens, {self doubleDot. otherPath})
 ]
 
 { #category : 'private' }

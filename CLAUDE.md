@@ -32,11 +32,11 @@ The core architecture is built around:
 The `SjJsonPath` class implements the following fluent API methods:
 
 - `/ otherPath`: Property access using dot notation (e.g., `$.store.book`)
-- `> index`: Array index access using bracket notation (e.g., `$.users[0]`)
-- `> interval`: Array slice access using interval notation (e.g., `$.book[0:2]` for `'book' > (0 to: 2)`)
-- `> (SjJsonPath first: n)`: First n elements slice notation (e.g., `$.book[:3]` for `'book' > (SjJsonPath first: 3)`)
-- `> (SjJsonPath last: n)`: Last n elements slice notation (e.g., `$.book[-1:]` for `'book' > (SjJsonPath last: 1)`)
-- `> SjJsonPath all`: Array wildcard access using bracket notation (e.g., `$.store.book[*].author`)
+- `@ index`: Array index access using bracket notation (e.g., `$.users[0]`)
+- `@ interval`: Array slice access using interval notation (e.g., `$.book[0:2]` for `'book' @ (0 to: 2)`)
+- `@ (SjJsonPath first: n)`: First n elements slice notation (e.g., `$.book[:3]` for `'book' @ (SjJsonPath first: 3)`)
+- `@ (SjJsonPath last: n)`: Last n elements slice notation (e.g., `$.book[-1:]` for `'book' @ (SjJsonPath last: 1)`)
+- `@ SjJsonPath all`: Array wildcard access using bracket notation (e.g., `$.store.book[*].author`)
 - `/ SjJsonPath all`: Property wildcard access using dot notation (e.g., `$.store.*`)
 - `// otherPath`: Recursive/descendant search using double dot (e.g., `$.store..title`)
 - `asString`: Converts the JsonPath to its string representation
@@ -73,7 +73,7 @@ SjJsonPathTestCase suite run
 ## Current State
 
 The project has implemented the core fluent API:
-- Core `SjJsonPath` class with working fluent API methods (`/`, `>`, `//`)
+- Core `SjJsonPath` class with working fluent API methods (`/`, `@`, `//`)
 - Test class with `testCreateBasicPath`, `testCreateArraySlicePath`, `testCreateWildcardPath`, and `testCreateArraySlicePathWithFirstAndLast` methods covering basic functionality, array slice support, wildcard expressions, and first/last slice notation
 - Token-based architecture for building JsonPath expressions
 - String conversion via `asString` method that concatenates all tokens
