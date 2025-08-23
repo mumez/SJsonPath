@@ -82,6 +82,10 @@ The project has implemented the core fluent API:
 - Wildcard support for both property access (`$.store.*`) and array indexing (`$.store.book[*].author`) via `SjJsonPath all`
 - Extensible token string conversion system via `asJsonPathTokenString` protocol
 
+- TODO: support filter expression like `?(@.price < 15)`
+  - Use the expression implementation pattern in SCypher (https://github.com/mumez/SCypher)
+  - https://github.com/mumez/SCypher/blob/master/repository/SCypher-Core/CyExpression.class.st
+
 ## Package Structure
 
 The project uses Pharo's Tonel format (.st files) organized in package directories. Each package contains:

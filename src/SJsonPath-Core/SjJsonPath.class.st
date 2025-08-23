@@ -40,6 +40,11 @@ SjJsonPath class >> last: index [
 	^ '-{1}:' format: { index }
 ]
 
+{ #category : 'factory' }
+SjJsonPath class >> current [
+	^ self token: '@'
+]
+
 { #category : 'accessing' }
 SjJsonPath >> tokens [
 	tokens ifNil: [ tokens := OrderedCollection new ].
@@ -71,6 +76,11 @@ SjJsonPath >> @ index [
 { #category : 'actions' }
 SjJsonPath >> // otherPath [
 	^ self class tokens: (self tokens, {self doubleDot. otherPath})
+]
+
+{ #category : 'actions' }
+SjJsonPath >> ? filterExpression [
+	^ self class tokens: (self tokens, {SjJsonPathFilterExpression expression: filterExpression})
 ]
 
 { #category : 'private' }

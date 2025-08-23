@@ -45,4 +45,34 @@ SjJsonPathTestCase >> testCreateArraySlicePathWithFirstAndLast [
 	self assert: path asString equals: '$.book[-1:]'
 ]
 
+{ #category : 'testing' }
+SjJsonPathTestCase >> testCurrentFactory [
+	"Test SjJsonPath current factory method"
+	| current |
+	
+	current := SjJsonPath current.
+	self assert: current tokens equals: #('@').
+	self assert: current asString equals: '@'
+]
+
+{ #category : 'testing' }
+SjJsonPathTestCase >> testCurrentWithPropertyAccess [
+	"Test current element with property access"
+	| path |
+	
+	path := SjJsonPath current / 'price'.
+	self assert: path tokens equals: #('@' '.' 'price').
+	self assert: path asString equals: '@.price'
+]
+
+{ #category : 'testing' }  
+SjJsonPathTestCase >> testCurrentWithArrayAccess [
+	"Test current element with array access"
+	| path |
+	
+	path := SjJsonPath current @ 0.
+	self assert: path tokens equals: #('@' '[' '0' ']').
+	self assert: path asString equals: '@[0]'
+]
+
 
