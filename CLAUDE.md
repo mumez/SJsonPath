@@ -11,7 +11,7 @@ SJsonPath is a Smalltalk library that provides a fluent API for creating JsonPat
 The project consists of three main packages:
 
 - **SJsonPath-Core**: Contains the main `SjJsonPath` class that implements the fluent API for building JsonPath expressions
-- **SJsonPath-Tests**: Contains test cases in `SjJsonPathTestCase` class
+- **SJsonPath-Tests**: Contains test cases in `SjJsonPathTestCase` and `SjJsonPathFilterExpressionTestCase` classes
 - **BaselineOfSJsonPath**: Metacello baseline configuration for package management and dependencies
 
 The core architecture is built around:
@@ -23,7 +23,10 @@ The core architecture is built around:
 
 - `src/SJsonPath-Core/SjJsonPath.class.st`: Main implementation with fluent API methods
 - `src/SJsonPath-Tests/SjJsonPathTestCase.class.st`: Test suite with basic path creation tests and array slice tests
+- `src/SJsonPath-Tests/SjJsonPathFilterExpressionTestCase.class.st`: Test suite for filter expression functionality
+- `src/SJsonPath-Core/SjJsonPathFilterExpression.class.st`: Filter expression implementation for JsonPath conditions
 - `src/SJsonPath-Core/Object.extension.st`: Extension providing default `asJsonPathTokenString` implementation
+- `src/SJsonPath-Core/String.extension.st`: Extension providing string comparison support for filter expressions
 - `src/SJsonPath-Core/Interval.extension.st`: Extension providing array slice formatting for Interval objects
 - `src/BaselineOfSJsonPath/BaselineOfSJsonPath.class.st`: Metacello baseline defining package structure and dependencies
 
@@ -39,6 +42,7 @@ The `SjJsonPath` class implements the following fluent API methods:
 - `@ SjJsonPath all`: Array wildcard access using bracket notation (e.g., `$.store.book[*].author`)
 - `/ SjJsonPath all`: Property wildcard access using dot notation (e.g., `$.store.*`)
 - `// otherPath`: Recursive/descendant search using double dot (e.g., `$.store..title`)
+- `? filterExpression`: Filter expression using conditions (e.g., `$.store.book[?(@.price < 15)]`)
 - `asString`: Converts the JsonPath to its string representation
 
 ### Helper Methods
@@ -53,6 +57,15 @@ The `SjJsonPath` class implements the following fluent API methods:
 
 - `SjJsonPath class >> first: n`: Returns slice notation for first n elements (e.g., `':3'`)
 - `SjJsonPath class >> last: n`: Returns slice notation for last n elements (e.g., `'-1:'`)
+- `SjJsonPath class >> current`: Returns current context '@' for filter expressions
+
+### Filter Expression Methods
+
+- `SjJsonPathFilterExpression >> < otherExpression`: Less than comparison
+- `SjJsonPathFilterExpression >> > otherExpression`: Greater than comparison
+- `SjJsonPathFilterExpression >> = otherExpression`: Equality comparison (becomes '==' in JsonPath)
+- `SjJsonPathFilterExpression >> & otherExpression`: Logical AND operation (becomes '&&' in JsonPath)
+- `String >> asJsonPathTokenString`: For filter expressions, wraps strings in single quotes
 
 ## Development Commands
 
@@ -68,18 +81,27 @@ Metacello new
 Since this uses Pharo/Smalltalk testing framework, tests can be run using:
 ```smalltalk
 SjJsonPathTestCase suite run
+SjJsonPathFilterExpressionTestCase suite run
+```
+
+Or run all SJsonPath tests:
+```smalltalk
+TestSuite named: 'SJsonPath-Tests' do: [ :suite | suite run ]
 ```
 
 ## Current State
 
-The project has implemented the core fluent API:
-- Core `SjJsonPath` class with working fluent API methods (`/`, `@`, `//`)
-- Test class with `testCreateBasicPath`, `testCreateArraySlicePath`, `testCreateWildcardPath`, and `testCreateArraySlicePathWithFirstAndLast` methods covering basic functionality, array slice support, wildcard expressions, and first/last slice notation
+The project has implemented the complete fluent API:
+- Core `SjJsonPath` class with working fluent API methods (`/`, `@`, `//`, `?`)
+- Main test class `SjJsonPathTestCase` with methods covering basic functionality, array slice support, wildcard expressions, and first/last slice notation
+- Filter expression test class `SjJsonPathFilterExpressionTestCase` with tests for basic filter expressions, string comparisons, and multiple conditions
 - Token-based architecture for building JsonPath expressions
 - String conversion via `asString` method that concatenates all tokens
 - Array slice support through Interval objects with proper JsonPath slice notation (e.g., `[0:2]`)
 - Advanced slice support with `first:` and `last:` class methods for common slice patterns (e.g., `[:3]`, `[-1:]`)
 - Wildcard support for both property access (`$.store.*`) and array indexing (`$.store.book[*].author`) via `SjJsonPath all`
+- **Filter expression support** with `SjJsonPathFilterExpression` class implementing comparison operators (`<`, `>`, `=`) and logical operators (`&`)
+- String extension for proper quote wrapping in filter expressions
 - Extensible token string conversion system via `asJsonPathTokenString` protocol
 
 ## Package Structure
