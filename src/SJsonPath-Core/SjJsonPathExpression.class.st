@@ -42,6 +42,36 @@ SjJsonPathExpression class >> gt: leftExpression with: rightExpression [
 ]
 
 { #category : 'instance creation' }
+SjJsonPathExpression class >> le: leftExpression with: rightExpression [
+	"Create less than or equal comparison expression"
+	^ self new
+		type: #infix;
+		operator: '<=';
+		expressions: { leftExpression. rightExpression };
+		yourself
+]
+
+{ #category : 'instance creation' }
+SjJsonPathExpression class >> ge: leftExpression with: rightExpression [
+	"Create greater than or equal comparison expression"
+	^ self new
+		type: #infix;
+		operator: '>=';
+		expressions: { leftExpression. rightExpression };
+		yourself
+]
+
+{ #category : 'instance creation' }
+SjJsonPathExpression class >> ne: leftExpression with: rightExpression [
+	"Create not equal comparison expression"
+	^ self new
+		type: #infix;
+		operator: '!=';
+		expressions: { leftExpression. rightExpression };
+		yourself
+]
+
+{ #category : 'instance creation' }
 SjJsonPathExpression class >> and: leftExpression with: rightExpression [
 	"Create logical AND expression"
 	^ self new
@@ -93,7 +123,7 @@ SjJsonPathExpression >> expressions: anObject [
 
 { #category : 'accessing' }
 SjJsonPathExpression >> enclosed [
-	^ enclosed
+	^ enclosed ifNil: [ false ]
 ]
 
 { #category : 'accessing' }
@@ -116,7 +146,7 @@ SjJsonPathExpression >> isPostfix [
 	^ self type = #postfix
 ]
 
-{ #category : 'api' }
+{ #category : 'actions' }
 SjJsonPathExpression >> beEnclosed [
 	"Mark this expression to be enclosed in parentheses"
 	self enclosed: true
@@ -141,6 +171,24 @@ SjJsonPathExpression >> = otherExpression [
 ]
 
 { #category : 'operators' }
+SjJsonPathExpression >> <= otherExpression [
+	"Create a less than or equal comparison expression"
+	^ self class le: self with: otherExpression
+]
+
+{ #category : 'operators' }
+SjJsonPathExpression >> >= otherExpression [
+	"Create a greater than or equal comparison expression"
+	^ self class ge: self with: otherExpression
+]
+
+{ #category : 'operators' }
+SjJsonPathExpression >> ~= otherExpression [
+	"Create a not equal comparison expression"
+	^ self class ne: self with: otherExpression
+]
+
+{ #category : 'operators' }
 SjJsonPathExpression >> & otherExpression [
 	"Create a logical AND expression"
 	^ self class and: self with: otherExpression
@@ -150,6 +198,11 @@ SjJsonPathExpression >> & otherExpression [
 SjJsonPathExpression >> | otherExpression [
 	"Create a logical OR expression"
 	^ self class or: self with: otherExpression
+]
+
+{ #category : 'printing' }
+SjJsonPathExpression >> asString [
+	^ self asJsonPathTokenString
 ]
 
 { #category : 'printing' }
@@ -173,14 +226,14 @@ SjJsonPathExpression >> tokensOn: stream [
 SjJsonPathExpression >> tokensPrefixTypeOn: stream [
 	stream nextPutAll: self operator asString.
 	self expressions do: [ :each |
-		stream nextPutAll: each asJsonPathTokenString
+		stream nextPutAll: each asJsonPathExpressionString
 	] separatedBy: [ stream nextPut: Character space ]
 ]
 
 { #category : 'printing' }
 SjJsonPathExpression >> tokensInfixTypeOn: stream [
 	self expressions 
-		do: [ :each | stream nextPutAll: each asJsonPathTokenString ]
+		do: [ :each | stream nextPutAll: each asJsonPathExpressionString ]
 		separatedBy: [ 
 			stream nextPut: Character space.
 			stream nextPutAll: self operator asString.
@@ -191,7 +244,7 @@ SjJsonPathExpression >> tokensInfixTypeOn: stream [
 { #category : 'printing' }
 SjJsonPathExpression >> tokensPostfixTypeOn: stream [
 	self expressions do: [ :each |
-		stream nextPutAll: each asJsonPathTokenString
+		stream nextPutAll: each asJsonPathExpressionString
 	] separatedBy: [ stream nextPut: Character space ].
 	stream nextPut: Character space.
 	stream nextPutAll: self operator asString

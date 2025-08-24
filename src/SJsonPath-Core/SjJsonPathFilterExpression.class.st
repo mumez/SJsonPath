@@ -12,7 +12,7 @@ SjJsonPathFilterExpression class >> expression: expression [
 	^ self new
 		type: #prefix;
     	operator: '?';
-		expressions: { expression enclosed };
+		expressions: { expression beEnclosed };
 		yourself
 ]
 
@@ -27,4 +27,5 @@ SjJsonPathFilterExpression >> expression: anObject [
 	"Set the expression by wrapping it in the expressions array"
 	self expressions: { anObject }
 ]
+
 

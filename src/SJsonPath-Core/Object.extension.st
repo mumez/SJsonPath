@@ -4,3 +4,8 @@ Extension { #name : 'Object' }
 Object >> asJsonPathTokenString [
 	^ self asString
 ]
+
+{ #category : '*SJsonPath-Core' }
+Object >> asJsonPathExpressionString [
+	^ self asJsonPathTokenString
+]
