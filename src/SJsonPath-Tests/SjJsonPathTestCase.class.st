@@ -71,7 +71,7 @@ SjJsonPathTestCase >> testCurrentWithArrayAccess [
 	| path |
 	
 	path := SjJsonPath current @ 0.
-	self assert: path tokens equals: #('@' '[' '0' ']').
+	self assert: path tokens equals: #('@' '[' 0 ']').
 	self assert: path asString equals: '@[0]'
 ]
 
