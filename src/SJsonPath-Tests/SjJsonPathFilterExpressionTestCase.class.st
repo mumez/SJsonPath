@@ -15,6 +15,13 @@ SjJsonPathFilterExpressionTestCase >> testBasicFilterExpression [
 ]
 
 { #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithGreaterThan [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'price' > 25).
+	self assert: path asString equals: '$.store.book[?(@.price > 25)]'
+]
+
+{ #category : 'testing' }
 SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithStringComparison [
 	| path |
 	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'category' = 'fiction').
@@ -26,4 +33,32 @@ SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithMultipleConditions
 	| path |
 	path := SjJsonPath root / 'store' / 'book' ? ((SjJsonPath current / 'price' < 15) & (SjJsonPath current / 'category' = 'fiction')).
 	self assert: path asString equals: '$.store.book[?(@.price < 15 && @.category == ''fiction'')]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNullComparison [
+	| path |
+	path := SjJsonPath root / 'bicycle' ? (SjJsonPath current / 'color' = nil).
+	self assert: path asString equals: '$.bicycle[?(@.color == null)]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithGreaterThanOrEqual [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'price' >= 20).
+	self assert: path asString equals: '$.store.book[?(@.price >= 20)]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithLessThanOrEqual [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'price' <= 10).
+	self assert: path asString equals: '$.store.book[?(@.price <= 10)]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNotEqual [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'category' ~= 'reference').
+	self assert: path asString equals: '$.store.book[?(@.category != ''reference'')]'
 ]
