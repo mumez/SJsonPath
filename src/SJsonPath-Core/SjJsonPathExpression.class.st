@@ -91,6 +91,16 @@ SjJsonPathExpression class >> or: leftExpression with: rightExpression [
 		yourself
 ]
 
+{ #category : 'instance creation' }
+SjJsonPathExpression class >> not: expression [
+	"Create logical NOT expression"
+	^ self new
+		type: #prefix;
+		operator: '!';
+		expressions: { expression beEnclosed };
+		yourself
+]
+
 { #category : 'accessing' }
 SjJsonPathExpression >> type [
 	^ type
@@ -198,6 +208,12 @@ SjJsonPathExpression >> & otherExpression [
 SjJsonPathExpression >> | otherExpression [
 	"Create a logical OR expression"
 	^ self class or: self with: otherExpression
+]
+
+{ #category : 'operators' }
+SjJsonPathExpression >> not [
+	"Create a logical NOT expression"
+	^ self class not: self
 ]
 
 { #category : 'printing' }
