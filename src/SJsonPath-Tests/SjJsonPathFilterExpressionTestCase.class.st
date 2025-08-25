@@ -62,3 +62,24 @@ SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNotEqual [
 	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'category' ~= 'reference').
 	self assert: path asString equals: '$.store.book[?(@.category != ''reference'')]'
 ]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNot [
+	| path |
+	path := SjJsonPath root / 'bicycle' ? (SjJsonPath current / 'color' = nil) not.
+	self assert: path asString equals: '$.bicycle[?(!(@.color == null))]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNotComparison [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'price' >= 20) not.
+	self assert: path asString equals: '$.store.book[?(!(@.price >= 20))]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNotMultipleConditions [
+	| path |
+	path := SjJsonPath root / 'store' / 'book' ? ((SjJsonPath current / 'price' < 15) & (SjJsonPath current / 'category' = 'fiction')) not.
+	self assert: path asString equals: '$.store.book[?(!(@.price < 15 && @.category == ''fiction''))]'
+]
