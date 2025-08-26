@@ -9,3 +9,8 @@ Object >> asJsonPathTokenString [
 Object >> asJsonPathExpressionString [
 	^ self asJsonPathTokenString
 ]
+
+{ #category : '*SJsonPath-Core' }
+Object >> asJsonPathRegex [
+	^ SjJsonPathRegex pattern: self asString
+]

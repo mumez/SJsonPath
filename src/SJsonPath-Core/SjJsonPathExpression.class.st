@@ -101,6 +101,16 @@ SjJsonPathExpression class >> not: expression [
 		yourself
 ]
 
+{ #category : 'instance creation' }
+SjJsonPathExpression class >> regexMatch: leftExpression with: rightExpression [
+	"Create regex match expression"
+	^ self new
+		type: #infix;
+		operator: '=~';
+		expressions: { leftExpression. rightExpression };
+		yourself
+]
+
 { #category : 'accessing' }
 SjJsonPathExpression >> type [
 	^ type

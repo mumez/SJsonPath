@@ -127,3 +127,8 @@ SjJsonPath >> = rightExpression [
 SjJsonPath >> ~= rightExpression [
 	^ SjJsonPathExpression ne: self with: rightExpression
 ]
+
+{ #category : 'filter support' }
+SjJsonPath >> =~ pattern [
+	^ SjJsonPathExpression regexMatch: self with: pattern asJsonPathRegex
+]

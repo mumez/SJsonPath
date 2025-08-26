@@ -83,3 +83,28 @@ SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithNotMultipleConditi
 	path := SjJsonPath root / 'store' / 'book' ? ((SjJsonPath current / 'price' < 15) & (SjJsonPath current / 'category' = 'fiction')) not.
 	self assert: path asString equals: '$.store.book[?(!(@.price < 15 && @.category == ''fiction''))]'
 ]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithRegexMatch [
+	"Test basic regex matching like ?(@.material =~ 'al')"
+	| path |
+	path := SjJsonPath root / 'inventory' / 'mountain_bikes' ? (SjJsonPath current / 'specs' / 'material' =~ 'al').
+	self assert: path asString equals: '$.inventory.mountain_bikes[?(@.specs.material =~ al)]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithRegexIgnoreCase [
+	"Test case-insensitive regex matching like ?(@.material =~ '(?i)al')"
+	| path |
+	path := SjJsonPath root / 'inventory' / 'mountain_bikes' ? (SjJsonPath current / 'specs' / 'material' =~ 'al' asJsonPathRegex ignoreCase).
+	self assert: path asString equals: '$.inventory.mountain_bikes[?(@.specs.material =~ (?i)al)]'
+]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithRegexPattern [
+	"Test regex pattern creation"
+	| regex path |
+	regex := SjJsonPathRegex pattern: '[a-zA-Z]+'.
+	path := SjJsonPath root / 'users' ? (SjJsonPath current / 'name' =~ regex).
+	self assert: path asString equals: '$.users[?(@.name =~ [a-zA-Z]+)]'
+]
