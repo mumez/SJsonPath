@@ -11,7 +11,8 @@ Key features:
 - Array slicing with interval notation (`$.book[0:2]`)
 - Wildcard support for properties and arrays (`$.store.*`, `$.book[*]`)
 - Recursive/descendant search (`$.store..title`)
-- **Filter expressions with comparison and logical operators** (`$.book[?(@.price < 15)]`) 
+- **Filter expressions with comparison and logical operators** (`$.book[?(@.price < 15)]`)
+- **Regex matching in filter expressions** (`$.inventory[?(@.material =~ '(?i)al')]`) 
 
 
 ## Installation
@@ -79,4 +80,23 @@ SjJsonPath root / 'store' / 'book' ? (SjJsonPath current / 'category' = 'fiction
 SjJsonPath root / 'store' / 'book' ? 
     ((SjJsonPath current / 'price' < 15) & (SjJsonPath current / 'category' = 'fiction')) / 'title'
 "=> '$.store.book[?(@.price < 15 && @.category == 'fiction')].title'"
+```
+
+### Regex Matching
+
+```smalltalk
+"Basic regex matching"
+SjJsonPath root / 'inventory' / 'mountain_bikes' ? 
+    (SjJsonPath current / 'specs' / 'material' =~ 'al') / 'model'
+"=> '$.inventory.mountain_bikes[?(@.specs.material =~ al)].model'"
+
+"Case-insensitive regex matching"
+SjJsonPath root / 'inventory' / 'mountain_bikes' ? 
+    (SjJsonPath current / 'specs' / 'material' =~ 'al' asJsonPathRegex ignoreCase) / 'model'
+"=> '$.inventory.mountain_bikes[?(@.specs.material =~ (?i)al)].model'"
+
+"Complex regex pattern"
+SjJsonPath root / 'users' ? 
+    (SjJsonPath current / 'email' =~ (SjJsonPathRegex pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')) / 'name'
+"=> '$.users[?(@.email =~ [a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})].name'"
 ```
