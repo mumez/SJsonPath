@@ -95,8 +95,33 @@ SjJsonPath root / 'inventory' / 'mountain_bikes' ?
     (SjJsonPath current / 'specs' / 'material' =~ 'al' asJsonPathRegex ignoreCase) / 'model'
 "=> '$.inventory.mountain_bikes[?(@.specs.material =~ (?i)al)].model'"
 
-"Complex regex pattern"
+"Multiple regex flags"
+SjJsonPath root / 'logs' ? 
+    (SjJsonPath current / 'message' =~ (SjJsonPathRegex pattern: '^error.*') ignoreCase multiLine) / 'timestamp'
+"=> '$.logs[?(@.message =~ (?im)^error.*)].timestamp'"
+
+"All available regex flags"
+SjJsonPath root / 'data' ? 
+    (SjJsonPath current / 'text' =~ (SjJsonPathRegex pattern: 'pattern')
+        ignoreCase        "i - case insensitive"
+        multiLine         "m - ^ and $ match line boundaries"
+        dotMatchesNewline "s - . matches newlines"
+        unicode           "u - unicode support"
+        verbose)          "x - ignore whitespace and comments"
+"=> '$.data[?(@.text =~ (?imsux)pattern)]'"
+
+"Complex regex pattern with flags"
 SjJsonPath root / 'users' ? 
-    (SjJsonPath current / 'email' =~ (SjJsonPathRegex pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')) / 'name'
-"=> '$.users[?(@.email =~ [a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})].name'"
+    (SjJsonPath current / 'email' =~ (SjJsonPathRegex pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}') ignoreCase) / 'name'
+"=> '$.users[?(@.email =~ (?i)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})].name'"
 ```
+
+#### Available Regex Flags
+
+- `ignoreCase` (i) - Case-insensitive matching
+- `multiLine` (m) - `^` and `$` match line boundaries
+- `dotMatchesNewline` (s) - `.` matches newline characters  
+- `crlfMode` (R) - Use CRLF as line terminator in multi-line mode
+- `swapGreed` (U) - Swap greedy and non-greedy quantifiers
+- `unicode` (u) - Unicode support (enabled by default)
+- `verbose` (x) - Ignore whitespace and allow comments

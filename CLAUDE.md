@@ -11,7 +11,7 @@ SJsonPath is a Smalltalk library that provides a fluent API for creating JsonPat
 The project consists of three main packages:
 
 - **SJsonPath-Core**: Contains the main `SjJsonPath` class that implements the fluent API for building JsonPath expressions
-- **SJsonPath-Tests**: Contains test cases in `SjJsonPathTestCase` and `SjJsonPathFilterExpressionTestCase` classes
+- **SJsonPath-Tests**: Contains test cases in `SjJsonPathTestCase`, `SjJsonPathFilterExpressionTestCase`, and `SjJsonPathRegexTestCase` classes
 - **BaselineOfSJsonPath**: Metacello baseline configuration for package management and dependencies
 
 The core architecture is built around:
@@ -24,6 +24,7 @@ The core architecture is built around:
 - `src/SJsonPath-Core/SjJsonPath.class.st`: Main implementation with fluent API methods
 - `src/SJsonPath-Tests/SjJsonPathTestCase.class.st`: Test suite with basic path creation tests and array slice tests
 - `src/SJsonPath-Tests/SjJsonPathFilterExpressionTestCase.class.st`: Test suite for filter expression functionality
+- `src/SJsonPath-Tests/SjJsonPathRegexTestCase.class.st`: Test suite for regex pattern and flag functionality
 - `src/SJsonPath-Core/SjJsonPathFilterExpression.class.st`: Filter expression implementation for JsonPath conditions
 - `src/SJsonPath-Core/SjJsonPathRegex.class.st`: Regex pattern implementation for JsonPath regex matching
 - `src/SJsonPath-Core/Object.extension.st`: Extension providing default `asJsonPathTokenString` and `asJsonPathRegex` implementations
@@ -63,6 +64,7 @@ The `SjJsonPath` class implements the following fluent API methods:
 - `SjJsonPath class >> last: n`: Returns slice notation for last n elements (e.g., `'-1:'`)
 - `SjJsonPath class >> current`: Returns current context '@' for filter expressions
 - `SjJsonPathRegex class >> pattern: aString`: Creates regex pattern instance
+- `SjJsonPathRegex class >> pattern: aString flags: aSet`: Creates regex pattern instance with flags
 
 ### Filter Expression Methods
 
@@ -75,9 +77,25 @@ The `SjJsonPath` class implements the following fluent API methods:
 
 ### Regex Expression Methods
 
-- `SjJsonPathRegex >> ignoreCase`: Returns case-insensitive regex pattern with '(?i)' flag
+#### Basic Methods
 - `SjJsonPathRegex >> pattern`: Returns the regex pattern string
+- `SjJsonPathRegex >> flags`: Returns the flags Set
 - `SjJsonPathRegex >> asJsonPathRegex`: Returns self (identity method)
+- `SjJsonPathRegex >> asJsonPathTokenString`: Returns regex with flags formatted as (?flags)pattern
+
+#### Flag Methods (all return new instances with added flag)
+- `SjJsonPathRegex >> ignoreCase`: Adds case-insensitive flag 'i'
+- `SjJsonPathRegex >> multiLine`: Adds multi-line flag 'm' (^ and $ match line boundaries)
+- `SjJsonPathRegex >> dotMatchesNewline`: Adds dot-all flag 's' (. matches newlines)
+- `SjJsonPathRegex >> crlfMode`: Adds CRLF flag 'R' (use CRLF as line terminator)
+- `SjJsonPathRegex >> swapGreed`: Adds ungreedy flag 'U' (swap greedy/non-greedy quantifiers)
+- `SjJsonPathRegex >> unicode`: Adds unicode flag 'u' (unicode support)
+- `SjJsonPathRegex >> verbose`: Adds verbose flag 'x' (ignore whitespace, allow comments)
+
+#### Implementation Details
+- `SjJsonPathRegex >> cloneWithFlagAdded:`: Private method for flag addition
+- Flags are stored as a Set of Strings and automatically sorted for consistent output
+- Empty flags return just the pattern; non-empty flags format as (?flags)pattern
 
 ## Development Commands
 
@@ -94,6 +112,7 @@ Since this uses Pharo/Smalltalk testing framework, tests can be run using:
 ```smalltalk
 SjJsonPathTestCase suite run
 SjJsonPathFilterExpressionTestCase suite run
+SjJsonPathRegexTestCase suite run
 ```
 
 Or run all SJsonPath tests:
@@ -106,14 +125,15 @@ TestSuite named: 'SJsonPath-Tests' do: [ :suite | suite run ]
 The project has implemented the complete fluent API:
 - Core `SjJsonPath` class with working fluent API methods (`/`, `@`, `//`, `?`)
 - Main test class `SjJsonPathTestCase` with methods covering basic functionality, array slice support, wildcard expressions, and first/last slice notation
-- Filter expression test class `SjJsonPathFilterExpressionTestCase` with tests for basic filter expressions, string comparisons, multiple conditions, and regex matching
+- Filter expression test class `SjJsonPathFilterExpressionTestCase` with tests for basic filter expressions, string comparisons, multiple conditions, and basic regex usage
+- Regex test class `SjJsonPathRegexTestCase` with comprehensive tests for regex patterns, individual flags, multiple flag combinations, and flag consistency
 - Token-based architecture for building JsonPath expressions
 - String conversion via `asString` method that concatenates all tokens
 - Array slice support through Interval objects with proper JsonPath slice notation (e.g., `[0:2]`)
 - Advanced slice support with `first:` and `last:` class methods for common slice patterns (e.g., `[:3]`, `[-1:]`)
 - Wildcard support for both property access (`$.store.*`) and array indexing (`$.store.book[*].author`) via `SjJsonPath all`
 - **Filter expression support** with `SjJsonPathFilterExpression` class implementing comparison operators (`<`, `>`, `=`) and logical operators (`&`)
-- **Regex matching support** with `SjJsonPathRegex` class implementing regex patterns (`=~`) with case-insensitive option (`ignoreCase`)
+- **Regex matching support** with `SjJsonPathRegex` class implementing regex patterns (`=~`) with multiple flag support including ignoreCase, multiLine, dotMatchesNewline, crlfMode, swapGreed, unicode, and verbose
 - String extension for proper quote wrapping in filter expressions
 - Object extension for regex pattern creation via `asJsonPathRegex` protocol
 - Extensible token string conversion system via `asJsonPathTokenString` protocol
@@ -159,7 +179,15 @@ SjJsonPath root / 'inventory' / 'mountain_bikes' ? (SjJsonPath current / 'specs'
 SjJsonPath root / 'inventory' / 'mountain_bikes' ? (SjJsonPath current / 'specs' / 'material' =~ 'al' asJsonPathRegex ignoreCase) asString
 "=> '$.inventory.mountain_bikes[?(@.specs.material =~ (?i)al)]'"
 
-"Complex regex pattern"
-SjJsonPath root / 'users' ? (SjJsonPath current / 'name' =~ (SjJsonPathRegex pattern: '[a-zA-Z]+')) asString
-"=> '$.users[?(@.name =~ [a-zA-Z]+)]'"
+"Multiple regex flags"
+SjJsonPath root / 'logs' ? (SjJsonPath current / 'message' =~ (SjJsonPathRegex pattern: '^error.*') ignoreCase multiLine) asString
+"=> '$.logs[?(@.message =~ (?im)^error.*)]'"
+
+"Complex regex pattern with flags"
+SjJsonPath root / 'users' ? (SjJsonPath current / 'email' =~ (SjJsonPathRegex pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}') ignoreCase) asString
+"=> '$.users[?(@.email =~ (?i)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})]'"
+
+"All available flags demonstration"
+(SjJsonPathRegex pattern: 'test') ignoreCase multiLine dotMatchesNewline unicode verbose asJsonPathTokenString
+"=> '(?imsux)test'"
 ```
