@@ -108,3 +108,12 @@ SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithRegexPattern [
 	path := SjJsonPath root / 'users' ? (SjJsonPath current / 'name' =~ regex).
 	self assert: path asString equals: '$.users[?(@.name =~ [a-zA-Z]+)]'
 ]
+
+{ #category : 'testing' }
+SjJsonPathFilterExpressionTestCase >> testFilterExpressionWithRegexIgnoreCaseAndMultipleFlags [
+	"Test regex with multiple flags in filter expression"
+	| path |
+	path := SjJsonPath root / 'logs' ? (SjJsonPath current / 'message' =~ (SjJsonPathRegex pattern: '^error.*') ignoreCase multiLine).
+	self assert: path asString equals: '$.logs[?(@.message =~ (?im)^error.*)]'
+]
+
