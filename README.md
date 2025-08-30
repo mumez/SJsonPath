@@ -20,7 +20,7 @@ Key features:
 ```smalltalk
 Metacello new
   baseline: 'SJsonPath';
-  repository: 'github://mumez/SJsonPath/src';
+  repository: 'github://mumez/SJsonPath:main/src';
   load.
 ```
 
