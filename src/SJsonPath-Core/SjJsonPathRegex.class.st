@@ -5,7 +5,8 @@ Class {
 		'pattern',
 		'flags'
 	],
-	#category : 'SJsonPath-Core'
+	#category : 'SJsonPath-Core',
+	#package : 'SJsonPath-Core'
 }
 
 { #category : 'instance creation' }
@@ -18,21 +19,32 @@ SjJsonPathRegex class >> pattern: aString flags: aSet [
 	^ self new pattern: aString; flags: aSet; yourself
 ]
 
-{ #category : 'initialization' }
-SjJsonPathRegex >> initialize [
-	super initialize.
-	pattern := ''.
-	flags := Set new
+{ #category : 'converting' }
+SjJsonPathRegex >> asJsonPathRegex [
+	^ self
 ]
 
-{ #category : 'accessing' }
-SjJsonPathRegex >> pattern [
-	^ pattern
+{ #category : 'converting' }
+SjJsonPathRegex >> asJsonPathTokenString [
+	| sortedFlags |
+	flags ifEmpty: [ ^ self pattern ].
+	sortedFlags := flags asSortedCollection.
+	^ '(?{1}){2}' format: {('' join: sortedFlags). self pattern}
 ]
 
-{ #category : 'accessing' }
-SjJsonPathRegex >> pattern: aString [
-	pattern := aString
+{ #category : 'private' }
+SjJsonPathRegex >> cloneWithFlagAdded: aFlag [
+	^ self class pattern: self pattern flags: (self flags add: aFlag; yourself)
+]
+
+{ #category : 'utilities' }
+SjJsonPathRegex >> crlfMode [
+	^ self cloneWithFlagAdded: 'R'
+]
+
+{ #category : 'utilities' }
+SjJsonPathRegex >> dotMatchesNewline [
+	^ self cloneWithFlagAdded: 's'
 ]
 
 { #category : 'accessing' }
@@ -45,27 +57,16 @@ SjJsonPathRegex >> flags: aSet [
 	flags := aSet
 ]
 
-{ #category : 'converting' }
-SjJsonPathRegex >> asJsonPathTokenString [
-	| sortedFlags |
-	flags ifEmpty: [ ^ self pattern ].
-	sortedFlags := flags asSortedCollection.
-	^ '(?{1}){2}' format: {('' join: sortedFlags). self pattern}
-]
-
-{ #category : 'converting' }
-SjJsonPathRegex >> asJsonPathRegex [
-	^ self
-]
-
-{ #category : 'private' }
-SjJsonPathRegex >> cloneWithFlagAdded: aFlag [
-	^ self class pattern: self pattern flags: (self flags add: aFlag; yourself)
-]
-
 { #category : 'utilities' }
 SjJsonPathRegex >> ignoreCase [
 	^ self cloneWithFlagAdded: 'i'
+]
+
+{ #category : 'initialization' }
+SjJsonPathRegex >> initialize [
+	super initialize.
+	pattern := ''.
+	flags := Set new
 ]
 
 { #category : 'utilities' }
@@ -73,14 +74,14 @@ SjJsonPathRegex >> multiLine [
 	^ self cloneWithFlagAdded: 'm'
 ]
 
-{ #category : 'utilities' }
-SjJsonPathRegex >> dotMatchesNewline [
-	^ self cloneWithFlagAdded: 's'
+{ #category : 'accessing' }
+SjJsonPathRegex >> pattern [
+	^ pattern
 ]
 
-{ #category : 'utilities' }
-SjJsonPathRegex >> crlfMode [
-	^ self cloneWithFlagAdded: 'R'
+{ #category : 'accessing' }
+SjJsonPathRegex >> pattern: aString [
+	pattern := aString
 ]
 
 { #category : 'utilities' }
