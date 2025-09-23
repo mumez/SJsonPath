@@ -1,6 +1,6 @@
-Extension { #name : #UndefinedObject }
+Extension { #name : 'UndefinedObject' }
 
-{ #category : #'*SJsonPath-Core' }
+{ #category : '*SJsonPath-Core' }
 UndefinedObject >> asJsonPathExpressionString [
 	^ 'null'
 ]

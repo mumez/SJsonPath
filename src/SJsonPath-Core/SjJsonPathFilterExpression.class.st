@@ -1,8 +1,6 @@
 Class {
 	#name : 'SjJsonPathFilterExpression',
 	#superclass : 'SjJsonPathExpression',
-	#instVars : [
-	],
 	#category : 'SJsonPath-Core',
 	#package : 'SJsonPath-Core'
 }
@@ -27,5 +25,3 @@ SjJsonPathFilterExpression >> expression: anObject [
 	"Set the expression by wrapping it in the expressions array"
 	self expressions: { anObject }
 ]
-
-
